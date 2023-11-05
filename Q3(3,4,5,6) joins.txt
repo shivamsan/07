@@ -1,0 +1,282 @@
+Assg3:
+ 
+mysql> use assg3;
+Database changed
+mysql> create table student(
+    -> sid int primary key,
+    -> fname varchar(20),
+    -> lname varchar(20),
+    -> cid int);
+Query OK, 0 rows affected (0.01 sec)
+ 
+mysql> insert into student(sid,fname,lname,cid)values (1,'yash','mahajan',101);
+Query OK, 1 row affected (0.01 sec)
+ 
+mysql> insert into student(sid,fname,lname,cid)values (2,'Shital','Patil',101);
+Query OK, 1 row affected (0.01 sec)
+ 
+mysql> insert into student(sid,fname,lname,cid)values (3,'Nikita','Patil',102);
+Query OK, 1 row affected (0.01 sec)
+ 
+mysql> insert into student(sid,fname,lname,cid)values (4,'Tony','Stark',103);
+Query OK, 1 row affected (0.00 sec)
+ 
+mysql> select * from student;
++-----+--------+---------+------+
+| sid | fname  | lname   | cid  |
++-----+--------+---------+------+
+|   1 | yash   | mahajan |  101 |
+|   2 | Shital | Patil   |  101 |
+|   3 | Nikita | Patil   |  102 |
+|   4 | Tony   | Stark   |  103 |
++-----+--------+---------+------+
+4 rows in set (0.00 sec)
+ 
+mysql> create table city(
+    -> cid int,
+    -> cname varchar(20));
+Query OK, 0 rows affected (0.01 sec)
+ 
+mysql> insert into city values (101,'Pune');
+Query OK, 1 row affected (0.01 sec)
+ 
+mysql> insert into city values (102,'Mumbai');
+Query OK, 1 row affected (0.00 sec)
+ 
+mysql> insert into city values (103,'Chennai');
+Query OK, 1 row affected (0.00 sec)
+ 
+mysql> insert into city values (104,'Delhi');
+Query OK, 1 row affected (0.01 sec)
+ 
+mysql> select * from city;
++------+---------+
+| cid  | cname   |
++------+---------+
+|  101 | Pune    |
+|  102 | Mumbai  |
+|  103 | Chennai |
+|  104 | Delhi   |
++------+---------+
+4 rows in set (0.00 sec)
+ 
+mysql> insert into student(sid,fname,lname)values (5,'Virat','Kolhi');
+Query OK, 1 row affected (0.00 sec)
+ 
+mysql> select * from student;
++-----+--------+---------+------+
+| sid | fname  | lname   | cid  |
++-----+--------+---------+------+
+|   1 | yash   | mahajan |  101 |
+|   2 | Shital | Patil   |  101 |
+|   3 | Nikita | Patil   |  102 |
+|   4 | Tony   | Stark   |  103 |
+|   5 | Virat  | Kolhi   | NULL |
++-----+--------+---------+------+
+5 rows in set (0.00 sec)
+ 
+mysql> select *
+    -> from student
+    -> inner join city
+    -> on student.cid = city.cid;
++-----+--------+---------+------+------+---------+
+| sid | fname  | lname   | cid  | cid  | cname   |
++-----+--------+---------+------+------+---------+
+|   1 | yash   | mahajan |  101 |  101 | Pune    |
+|   2 | Shital | Patil   |  101 |  101 | Pune    |
+|   3 | Nikita | Patil   |  102 |  102 | Mumbai  |
+|   4 | Tony   | Stark   |  103 |  103 | Chennai |
++-----+--------+---------+------+------+---------+
+4 rows in set (0.00 sec)
+ 
+mysql> select *
+    -> from student
+    -> left join city
+    -> on student.cid = city.cid;
++-----+--------+---------+------+------+---------+
+| sid | fname  | lname   | cid  | cid  | cname   |
++-----+--------+---------+------+------+---------+
+|   1 | yash   | mahajan |  101 |  101 | Pune    |
+|   2 | Shital | Patil   |  101 |  101 | Pune    |
+|   3 | Nikita | Patil   |  102 |  102 | Mumbai  |
+|   4 | Tony   | Stark   |  103 |  103 | Chennai |
+|   5 | Virat  | Kolhi   | NULL | NULL | NULL    |
++-----+--------+---------+------+------+---------+
+5 rows in set (0.00 sec)
+ 
+mysql> select *
+    -> from student
+    -> right join city
+    -> on student.cid = city.cid;
++------+--------+---------+------+------+---------+
+| sid  | fname  | lname   | cid  | cid  | cname   |
++------+--------+---------+------+------+---------+
+|    1 | yash   | mahajan |  101 |  101 | Pune    |
+|    2 | Shital | Patil   |  101 |  101 | Pune    |
+|    3 | Nikita | Patil   |  102 |  102 | Mumbai  |
+|    4 | Tony   | Stark   |  103 |  103 | Chennai |
+| NULL | NULL   | NULL    | NULL |  104 | Delhi   |
++------+--------+---------+------+------+---------+
+5 rows in set (0.00 sec)
+ 
+mysql> select *
+    -> from student
+    -> full join city
+    -> on student.cid = city.cid;
+ERROR 1054 (42S22): Unknown column 'student.cid' in 'on clause'
+mysql> select * from student natural join city ;
++------+-----+--------+---------+---------+
+| cid  | sid | fname  | lname   | cname   |
++------+-----+--------+---------+---------+
+|  101 |   1 | yash   | mahajan | Pune    |
+|  101 |   2 | Shital | Patil   | Pune    |
+|  102 |   3 | Nikita | Patil   | Mumbai  |
+|  103 |   4 | Tony   | Stark   | Chennai |
++------+-----+--------+---------+---------+
+4 rows in set (0.00 sec)
+ 
+mysql> select * from student cross join city ;
++-----+--------+---------+------+------+---------+
+| sid | fname  | lname   | cid  | cid  | cname   |
++-----+--------+---------+------+------+---------+
+|   1 | yash   | mahajan |  101 |  101 | Pune    |
+|   1 | yash   | mahajan |  101 |  102 | Mumbai  |
+|   1 | yash   | mahajan |  101 |  103 | Chennai |
+|   1 | yash   | mahajan |  101 |  104 | Delhi   |
+|   2 | Shital | Patil   |  101 |  101 | Pune    |
+|   2 | Shital | Patil   |  101 |  102 | Mumbai  |
+|   2 | Shital | Patil   |  101 |  103 | Chennai |
+|   2 | Shital | Patil   |  101 |  104 | Delhi   |
+|   3 | Nikita | Patil   |  102 |  101 | Pune    |
+|   3 | Nikita | Patil   |  102 |  102 | Mumbai  |
+|   3 | Nikita | Patil   |  102 |  103 | Chennai |
+|   3 | Nikita | Patil   |  102 |  104 | Delhi   |
+|   4 | Tony   | Stark   |  103 |  101 | Pune    |
+|   4 | Tony   | Stark   |  103 |  102 | Mumbai  |
+|   4 | Tony   | Stark   |  103 |  103 | Chennai |
+|   4 | Tony   | Stark   |  103 |  104 | Delhi   |
+|   5 | Virat  | Kolhi   | NULL |  101 | Pune    |
+|   5 | Virat  | Kolhi   | NULL |  102 | Mumbai  |
+|   5 | Virat  | Kolhi   | NULL |  103 | Chennai |
+|   5 | Virat  | Kolhi   | NULL |  104 | Delhi   |
++-----+--------+---------+------+------+---------+
+20 rows in set (0.00 sec)
+ 
+mysql> select * from student left join city on student.cid = city.cid
+    -> union
+    -> select * from student right join city on student.cid = city.cid;
++------+--------+---------+------+------+---------+
+| sid  | fname  | lname   | cid  | cid  | cname   |
++------+--------+---------+------+------+---------+
+|    1 | yash   | mahajan |  101 |  101 | Pune    |
+|    2 | Shital | Patil   |  101 |  101 | Pune    |
+|    3 | Nikita | Patil   |  102 |  102 | Mumbai  |
+|    4 | Tony   | Stark   |  103 |  103 | Chennai |
+|    5 | Virat  | Kolhi   | NULL | NULL | NULL    |
+| NULL | NULL   | NULL    | NULL |  104 | Delhi   |
++------+--------+---------+------+------+---------+
+6 rows in set (0.00 sec)
+ 
+mysql> select * from student left join city on student.cid = city.cid union all select * from student right join city on student.cid = city.cid;
++------+--------+---------+------+------+---------+
+| sid  | fname  | lname   | cid  | cid  | cname   |
++------+--------+---------+------+------+---------+
+|    1 | yash   | mahajan |  101 |  101 | Pune    |
+|    2 | Shital | Patil   |  101 |  101 | Pune    |
+|    3 | Nikita | Patil   |  102 |  102 | Mumbai  |
+|    4 | Tony   | Stark   |  103 |  103 | Chennai |
+|    5 | Virat  | Kolhi   | NULL | NULL | NULL    |
+|    1 | yash   | mahajan |  101 |  101 | Pune    |
+|    2 | Shital | Patil   |  101 |  101 | Pune    |
+|    3 | Nikita | Patil   |  102 |  102 | Mumbai  |
+|    4 | Tony   | Stark   |  103 |  103 | Chennai |
+| NULL | NULL   | NULL    | NULL |  104 | Delhi   |
++------+--------+---------+------+------+---------+
+10 rows in set (0.00 sec)
+ 
+mysql> create view view1 as
+    -> select s.sid,s.fname,s.lname,c.cname
+    -> from student as s,city as c
+    -> where s.cid = c.cid;
+Query OK, 0 rows affected (0.01 sec)
+ 
+mysql> select * from view1;
++-----+--------+---------+---------+
+| sid | fname  | lname   | cname   |
++-----+--------+---------+---------+
+|   1 | yash   | mahajan | Pune    |
+|   2 | Shital | Patil   | Pune    |
+|   3 | Nikita | Patil   | Mumbai  |
+|   4 | Tony   | Stark   | Chennai |
++-----+--------+---------+---------+
+4 rows in set (0.00 sec)
+ 
+mysql> drop view view1;
+Query OK, 0 rows affected (0.00 sec)
+ 
+mysql> select * from view1;
+ERROR 1146 (42S02): Table 'assg3.view1' doesn't exist
+mysql> select * from view1;
+ERROR 1146 (42S02): Table 'assg3.view1' doesn't exist
+ 
+mysql> select sid
+    -> from student
+    -> where cid in (
+    -> select cid
+    -> from city
+    -> where cname = 'Pune' or cname = 'Chennai')
+    -> ;
++-----+
+| sid |
++-----+
+|   1 |
+|   2 |
+|   4 |
++-----+
+3 rows in set (0.01 sec)
+ 
+mysql> select sid  from student where exists ( select * from city where cname = 'Pune' or cname = 'Chennai');
++-----+
+| sid |
++-----+
+|   1 |
+|   2 |
+|   3 |
+|   4 |
+|   5 |
++-----+
+5 rows in set (0.00 sec)
+ 
+mysql> select fname ,sid from student where cid in ( select cid from city where cname = 'Pune');
++--------+-----+
+| fname  | sid |
++--------+-----+
+| yash   |   1 |
+| Shital |   2 |
++--------+-----+
+2 rows in set (0.00 sec)
+ 
+mysql> select * from student order by sid desc;
++-----+--------+---------+------+
+| sid | fname  | lname   | cid  |
++-----+--------+---------+------+
+|   5 | Virat  | Kolhi   | NULL |
+|   4 | Tony   | Stark   |  103 |
+|   3 | Nikita | Patil   |  102 |
+|   2 | Shital | Patil   |  101 |
+|   1 | yash   | mahajan |  101 |
++-----+--------+---------+------+
+5 rows in set (0.00 sec)
+ 
+
+
+
+
+full join...............
+
+left join cha syntax
+UNION
+right join cha syntax
+ mysql> select*from student left join city on student.cid = city.cid
+    -> union
+    -> select*from student right join city on student.cid = city.cid;

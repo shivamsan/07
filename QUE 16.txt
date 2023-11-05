@@ -1,0 +1,49 @@
+-- Create Students table with Primary Key and Not Null constraints
+CREATE TABLE Students (
+    StudentID INT PRIMARY KEY,
+    StudentName VARCHAR(255) NOT NULL
+);
+
+-- Create Courses table with a Unique Key constraint
+CREATE TABLE Courses (
+    CourseID INT PRIMARY KEY,
+    CourseName VARCHAR(255) NOT NULL,
+    Instructor VARCHAR(255) NOT NULL,
+    StudentID INT,
+    UNIQUE (CourseName),
+    FOREIGN KEY (StudentID) REFERENCES Students(StudentID)
+);
+
+-- Insert data into the Students table
+INSERT INTO Students (StudentID, StudentName) VALUES
+(1, 'John'),
+(2, 'Alice'),
+(3, 'Bob');
+
+-- Insert data into the Courses table
+INSERT INTO Courses (CourseID, CourseName, Instructor, StudentID) VALUES
+(101, 'Math 101', 'Prof. Smith', 1),
+(102, 'Science 101', 'Prof. Johnson', 2),
+(103, 'History 101', 'Prof. Brown', 3);
+
+-- Attempt to insert data violating constraints
+-- This will generate errors
+-- Insert a duplicate StudentID into the Students table (Primary Key violation)
+INSERT INTO Students (StudentID, StudentName) VALUES (1, 'Mary');
+
+-- Insert a duplicate CourseName into the Courses table (Unique Key violation)
+INSERT INTO Courses (CourseID, CourseName, Instructor) VALUES (104, 'Math 101', 'Prof. Anderson');
+
+-- Insert a Course record with a non-existent StudentID (Foreign Key violation)
+INSERT INTO Courses (CourseID, CourseName, Instructor, StudentID) VALUES (104, 'Chemistry 101', 'Prof. Davis', 4);
+
+-- Insert data meeting constraints
+-- These inserts should succeed
+-- Insert a new student
+INSERT INTO Students (StudentID, StudentName) VALUES (4, 'Mary');
+
+-- Insert a new course with a unique name
+INSERT INTO Courses (CourseID, CourseName, Instructor) VALUES (104, 'Geography 101', 'Prof. Wilson');
+
+-- Insert a course with a valid StudentID (Foreign Key reference)
+INSERT INTO Courses (CourseID, CourseName, Instructor, StudentID) VALUES (105, 'Biology 101', 'Prof. Parker', 2);

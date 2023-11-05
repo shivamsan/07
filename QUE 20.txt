@@ -1,0 +1,90 @@
+atharva@atharva-Lenovo-Y520-15IKBN:~$ sudo mysql;
+[sudo] password for atharva: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 27
+Server version: 8.0.34-1ubuntu1 (Ubuntu)
+
+Copyright (c) 2000, 2023, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> use athu;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> CREATE TABLE Employee_new (
+    ->     Empno INT,
+    ->     Ename VARCHAR(255),
+    ->     Job VARCHAR(255),
+    ->     Salary DECIMAL(10, 2)
+    -> );
+Query OK, 0 rows affected (2.63 sec)
+
+mysql> INSERT INTO Employee_new (Empno, Ename, Job, Salary)
+    -> VALUES
+    ->     (1, 'John', 'Manager', 60000),
+    ->     (2, 'Alice', 'Manager', 62000),
+    ->     (3, 'Bob', 'Clerk', 50000),
+    ->     (4, 'Charlie', 'Clerk', 55000),
+    ->     (5, 'David', 'Analyst', 70000),
+    ->     (6, 'Eve', 'Analyst', 72000);
+Query OK, 6 rows affected (0.11 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql> select * from Employee_new;
++-------+---------+---------+----------+
+| Empno | Ename   | Job     | Salary   |
++-------+---------+---------+----------+
+|     1 | John    | Manager | 60000.00 |
+|     2 | Alice   | Manager | 62000.00 |
+|     3 | Bob     | Clerk   | 50000.00 |
+|     4 | Charlie | Clerk   | 55000.00 |
+|     5 | David   | Analyst | 70000.00 |
+|     6 | Eve     | Analyst | 72000.00 |
++-------+---------+---------+----------+
+6 rows in set (0.00 sec)
+
+
+mysql> SELECT Job, Salary
+    -> FROM Employee_new
+    -> WHERE Salary >= 50000 AND Salary <= 70000;
++---------+----------+
+| Job     | Salary   |
++---------+----------+
+| Manager | 60000.00 |
+| Manager | 62000.00 |
+| Clerk   | 50000.00 |
+| Clerk   | 55000.00 |
+| Analyst | 70000.00 |
++---------+----------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT Job, AVG(Salary) AS AvgSalary
+    -> FROM Employee_new
+    -> GROUP BY Job;
++---------+--------------+
+| Job     | AvgSalary    |
++---------+--------------+
+| Manager | 61000.000000 |
+| Clerk   | 52500.000000 |
+| Analyst | 71000.000000 |
++---------+--------------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT Job, AVG(Salary) AS AvgSalary
+    -> FROM Employee_new
+    -> GROUP BY Job
+    -> HAVING AvgSalary > 55000;
++---------+--------------+
+| Job     | AvgSalary    |
++---------+--------------+
+| Manager | 61000.000000 |
+| Analyst | 71000.000000 |
++---------+--------------+
+2 rows in set (0.00 sec)
+

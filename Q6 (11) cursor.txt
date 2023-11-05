@@ -1,0 +1,117 @@
+atharva@atharva-Lenovo-Y520-15IKBN:~$ sudo mysql;
+[sudo] password for atharva: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 23
+Server version: 8.0.34-1ubuntu1 (Ubuntu)
+
+Copyright (c) 2000, 2023, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> use athu;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> create table o_rollcall(roll_no int,name varchar(20),address varchar(20));
+Query OK, 0 rows affected (0.46 sec)
+
+mysql> create table n_rollcall(roll_no int,name varchar(20),address varchar(20));
+Query OK, 0 rows affected (0.45 sec)
+
+mysql> insert into o_rollcall values('1','Vedant','Kolhapur');
+Query OK, 1 row affected (0.07 sec)
+
+mysql> insert into o_rollcall values('1','Vedant','Kolhapur');
+Query OK, 1 row affected (0.38 sec)
+
+mysql> insert into o_rollcall values('3','Pranav','Chinchwad');
+Query OK, 1 row affected (1.33 sec)
+
+mysql> insert into o_rollcall values('4','Gidde','Kasarwadi');
+Query OK, 1 row affected (1.79 sec)
+
+mysql> insert into o_rollcall values('5','Mayur','Chinchwad');
+Query OK, 1 row affected (0.72 sec)
+
+mysql> insert into o_rollcall values('6','Kaygude','Chikhali');
+Query OK, 1 row affected (0.08 sec)
+
+
+mysql> delimiter //
+mysql> create procedure p3(in r1 int)
+    -> begin
+    -> declare r2 int;
+    -> declare exit_loop boolean;
+    -> declare c1 cursor for select roll_no from o_rollcall where roll_no>r1;
+    -> declare continue handler for not found set exit_loop=true;
+    -> open c1;
+    -> e_loop:loop
+    -> fetch c1 into r2;
+    -> if not exists(select * from n_rollcall where roll_no=r2)
+    -> then
+    -> insert into n_rollcall select * from o_rollcall where roll_no=r2;
+    -> end if;
+    -> if exit_loop
+    -> then
+    -> close c1;
+    -> leave e_loop;
+    -> end if;
+    -> end loop e_loop;
+    -> end
+    -> //
+Query OK, 0 rows affected (0.13 sec)
+
+
+mysql> call p3(3);
+    -> //
+Query OK, 0 rows affected (0.26 sec)
+
+mysql> select * from n_rollcall;
+    -> //
++---------+---------+-----------+
+| roll_no | name    | address   |
++---------+---------+-----------+
+|       4 | Gidde   | Kasarwadi |
+|       5 | Mayur   | Chinchwad |
+|       6 | Kaygude | Chikhali  |
++---------+---------+-----------+
+3 rows in set (0.00 sec)
+
+mysql> call p3(4);
+    -> //
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from n_rollcall;
+    -> //
++---------+---------+-----------+
+| roll_no | name    | address   |
++---------+---------+-----------+
+|       4 | Gidde   | Kasarwadi |
+|       5 | Mayur   | Chinchwad |
+|       6 | Kaygude | Chikhali  |
++---------+---------+-----------+
+3 rows in set (0.00 sec)
+
+mysql> call p3(1);
+    -> //
+Query OK, 0 rows affected (0.07 sec)
+
+mysql> select * from n_rollcall;
+    -> //
++---------+---------+-----------+
+| roll_no | name    | address   |
++---------+---------+-----------+
+|       4 | Gidde   | Kasarwadi |
+|       5 | Mayur   | Chinchwad |
+|       6 | Kaygude | Chikhali  |
+|       3 | Pranav  | Chinchwad |
++---------+---------+-----------+
+4 rows in set (0.00 sec)
+
+
+

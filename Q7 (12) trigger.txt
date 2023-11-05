@@ -1,0 +1,130 @@
+atharva@atharva-Lenovo-Y520-15IKBN:~$ sudo mysql
+[sudo] password for atharva: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 24
+Server version: 8.0.34-1ubuntu1 (Ubuntu)
+
+Copyright (c) 2000, 2023, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> use athu;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> CREATE TABLE Library (
+    -> Library_ID INT AUTO_INCREMENT PRIMARY KEY,
+    -> Book_Title VARCHAR(255),
+    -> Author VARCHAR(255)
+    -> );
+Query OK, 0 rows affected (1.12 sec)
+
+mysql> CREATE TABLE Library_Audit (
+    -> Audit_ID INT AUTO_INCREMENT PRIMARY KEY,
+    -> Library_ID INT,
+    -> Book_Title VARCHAR(255),
+    -> Author VARCHAR(255),
+    -> Action VARCHAR(10),
+    -> Audit_Date TIMESTAMP
+    -> );
+Query OK, 0 rows affected (0.38 sec)
+
+mysql> DELIMITER //
+mysql> CREATE TRIGGER Library_Update_Audit
+    -> BEFORE UPDATE ON Library
+    -> FOR EACH ROW
+    -> BEGIN
+    -> INSERT INTO Library_Audit (Library_ID, Book_Title, Author, Action, Audit_Date)
+    -> VALUES (OLD.Library_ID, OLD.Book_Title, OLD.Author, 'UPDATE', NOW());
+    -> END;
+    -> //
+Query OK, 0 rows affected (0.14 sec)
+
+mysql> CREATE TRIGGER Library_Delete_Audit
+    -> BEFORE DELETE ON Library
+    -> FOR EACH ROW
+    -> BEGIN
+    -> INSERT INTO Library_Audit (Library_ID, Book_Title, Author, Action, Audit_Date)
+    -> VALUES (OLD.Library_ID, OLD.Book_Title, OLD.Author, 'DELETE', NOW());
+    -> END;
+    -> //
+Query OK, 0 rows affected (0.11 sec)
+
+mysql> INSERT INTO Library (Library_ID, Book_Title, Author) VALUES (1, 'Book A', 'Author X');
+    -> //
+Query OK, 1 row affected (0.07 sec)
+
+mysql> select * from Library;
+    -> //
++------------+------------+----------+
+| Library_ID | Book_Title | Author   |
++------------+------------+----------+
+|          1 | Book A     | Author X |
++------------+------------+----------+
+1 row in set (0.00 sec)
+
+mysql> UPDATE Library SET Book_Title = 'Updated Book A' WHERE Library_ID = 1;
+    -> //
+Query OK, 1 row affected (0.07 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from Library;
+    -> //
++------------+----------------+----------+
+| Library_ID | Book_Title     | Author   |
++------------+----------------+----------+
+|          1 | Updated Book A | Author X |
++------------+----------------+----------+
+1 row in set (0.00 sec)
+
+mysql> SELECT * FROM Library_Audit;
+    -> //
++----------+------------+------------+----------+--------+---------------------+
+| Audit_ID | Library_ID | Book_Title | Author   | Action | Audit_Date          |
++----------+------------+------------+----------+--------+---------------------+
+|        1 |          1 | Book A     | Author X | UPDATE | 2023-11-05 14:27:50 |
++----------+------------+------------+----------+--------+---------------------+
+1 row in set (0.00 sec)
+
+mysql> INSERT INTO Library (Library_ID, Book_Title, Author) VALUES (2, 'Book B', 'Author Y');
+    -> //
+Query OK, 1 row affected (0.10 sec)
+
+mysql> select * from Library;
+    -> //
++------------+----------------+----------+
+| Library_ID | Book_Title     | Author   |
++------------+----------------+----------+
+|          1 | Updated Book A | Author X |
+|          2 | Book B         | Author Y |
++------------+----------------+----------+
+2 rows in set (0.00 sec)
+
+mysql> DELETE FROM Library WHERE Library_ID = 2;
+    -> //
+Query OK, 1 row affected (0.08 sec)
+
+mysql> select * from Library;
+    -> //
++------------+----------------+----------+
+| Library_ID | Book_Title     | Author   |
++------------+----------------+----------+
+|          1 | Updated Book A | Author X |
++------------+----------------+----------+
+1 row in set (0.00 sec)
+
+mysql> SELECT * FROM Library_Audit;
+    -> //
++----------+------------+------------+----------+--------+---------------------+
+| Audit_ID | Library_ID | Book_Title | Author   | Action | Audit_Date          |
++----------+------------+------------+----------+--------+---------------------+
+|        1 |          1 | Book A     | Author X | UPDATE | 2023-11-05 14:27:50 |
+|        2 |          2 | Book B     | Author Y | DELETE | 2023-11-05 14:29:02 |
++----------+------------+------------+----------+--------+---------------------+
+2 rows in set (0.00 sec)
+

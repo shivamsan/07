@@ -1,0 +1,266 @@
+/////////////////////////////////////////////////////....QUESTION 7....///////////////////////////////////////////////
+
+
+atharva@atharva-Lenovo-Y520-15IKBN:~$ sudo mysql
+[sudo] password for atharva: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 25
+Server version: 8.0.34-1ubuntu1 (Ubuntu)
+
+Copyright (c) 2000, 2023, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> use athu;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> show tables;
++----------------+
+| Tables_in_athu |
++----------------+
+| Library        |
+| Library_Audit  |
+| borrower       |
+| city           |
+| fine           |
+| marks          |
+| n_rollcall     |
+| o_rollcall     |
+| result         |
+| stud           |
+| student        |
++----------------+
+11 rows in set (0.00 sec)
+
+mysql> CREATE TABLE Employee (
+    ->     Empno INT,
+    ->     Ename VARCHAR(255),
+    ->     Job VARCHAR(255),
+    ->     Salary DECIMAL(10, 2)
+    -> );
+Query OK, 0 rows affected (0.93 sec)
+
+mysql> insert into Employee (Empno,Ename, Job, Salary) values(1,"a","aa",111);
+Query OK, 1 row affected (0.08 sec)
+
+mysql> insert into Employee (Empno,Ename, Job, Salary) values( 2,"b","bb",222)
+    -> ;
+Query OK, 1 row affected (0.44 sec)
+
+mysql> insert into Employee (Empno,Ename, Job, Salary) values( 3,"c","cc",333);
+Query OK, 1 row affected (0.07 sec)
+
+mysql> insert into Employee (Empno,Ename, Job, Salary) values( 4,"d","dd",444);
+Query OK, 1 row affected (0.17 sec)
+
+mysql> insert into Employee (Empno,Ename, Job, Salary) values( 5,"e","ee",555);
+Query OK, 1 row affected (0.07 sec)
+
+mysql> insert into Employee (Empno,Ename, Job, Salary) values( 6,"f","ff",666);
+Query OK, 1 row affected (0.09 sec)
+
+mysql> select * from Employee;
++-------+-------+------+--------+
+| Empno | Ename | Job  | Salary |
++-------+-------+------+--------+
+|     1 | a     | aa   | 111.00 |
+|     2 | b     | bb   | 222.00 |
+|     3 | c     | cc   | 333.00 |
+|     4 | d     | dd   | 444.00 |
+|     5 | e     | ee   | 555.00 |
+|     6 | f     | ff   | 666.00 |
++-------+-------+------+--------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT AVG(Salary) AS AverageSalary
+    -> FROM Employee;
++---------------+
+| AverageSalary |
++---------------+
+|    388.500000 |
++---------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT COUNT(*) AS NumberOfEmployees
+    -> FROM Employee;
++-------------------+
+| NumberOfEmployees |
++-------------------+
+|                 6 |
++-------------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT MIN(Salary) AS MinimumSalary
+    -> FROM Employee;
++---------------+
+| MinimumSalary |
++---------------+
+|        111.00 |
++---------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT MAX(Salary) AS MaximumSalary
+    -> FROM Employee;
++---------------+
+| MaximumSalary |
++---------------+
+|        666.00 |
++---------------+
+1 row in set (0.01 sec)
+
+
+
+////////////////////////////////////////////////////....QUESTION 14....////////////////////////////////////////////
+
+
+
+
+mysql> CREATE VIEW EmployeeView AS
+    -> SELECT Empno, Ename, Job, Salary
+    -> FROM Employee;
+Query OK, 0 rows affected (0.13 sec)
+
+mysql> SELECT * FROM EmployeeView;
++-------+-------+------+--------+
+| Empno | Ename | Job  | Salary |
++-------+-------+------+--------+
+|     1 | a     | aa   | 111.00 |
+|     2 | b     | bb   | 222.00 |
+|     3 | c     | cc   | 333.00 |
+|     4 | d     | dd   | 444.00 |
+|     5 | e     | ee   | 555.00 |
+|     6 | f     | ff   | 666.00 |
++-------+-------+------+--------+
+6 rows in set (0.00 sec)
+
+mysql> INSERT INTO EmployeeView (Empno, Ename, Job, Salary)
+    -> VALUES (101, 'John Doe', 'Manager', 60000);
+Query OK, 1 row affected (0.10 sec)
+
+mysql> SELECT * FROM EmployeeView;
++-------+----------+---------+----------+
+| Empno | Ename    | Job     | Salary   |
++-------+----------+---------+----------+
+|     1 | a        | aa      |   111.00 |
+|     2 | b        | bb      |   222.00 |
+|     3 | c        | cc      |   333.00 |
+|     4 | d        | dd      |   444.00 |
+|     5 | e        | ee      |   555.00 |
+|     6 | f        | ff      |   666.00 |
+|   101 | John Doe | Manager | 60000.00 |
++-------+----------+---------+----------+
+7 rows in set (0.00 sec)
+
+mysql> UPDATE EmployeeView
+    -> SET Salary = 65000
+    -> WHERE Empno = 101;
+Query OK, 1 row affected (0.07 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM EmployeeView;
++-------+----------+---------+----------+
+| Empno | Ename    | Job     | Salary   |
++-------+----------+---------+----------+
+|     1 | a        | aa      |   111.00 |
+|     2 | b        | bb      |   222.00 |
+|     3 | c        | cc      |   333.00 |
+|     4 | d        | dd      |   444.00 |
+|     5 | e        | ee      |   555.00 |
+|     6 | f        | ff      |   666.00 |
+|   101 | John Doe | Manager | 65000.00 |
++-------+----------+---------+----------+
+7 rows in set (0.00 sec)
+
+mysql> DELETE FROM EmployeeView
+    -> WHERE Empno = 101;
+Query OK, 1 row affected (0.09 sec)
+
+mysql> SELECT * FROM EmployeeView;
++-------+-------+------+--------+
+| Empno | Ename | Job  | Salary |
++-------+-------+------+--------+
+|     1 | a     | aa   | 111.00 |
+|     2 | b     | bb   | 222.00 |
+|     3 | c     | cc   | 333.00 |
+|     4 | d     | dd   | 444.00 |
+|     5 | e     | ee   | 555.00 |
+|     6 | f     | ff   | 666.00 |
++-------+-------+------+--------+
+6 rows in set (0.00 sec)
+
+
+
+
+///////////////////////////////////.......QUESTION 18.....///////////////////////////////////////////////
+
+mysql> CREATE INDEX empno_index ON Employee (Empno);
+Query OK, 0 rows affected (0.55 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM Employee WHERE Empno = 1;
++-------+-------+------+--------+
+| Empno | Ename | Job  | Salary |
++-------+-------+------+--------+
+|     1 | a     | aa   | 111.00 |
++-------+-------+------+--------+
+1 row in set (0.00 sec)
+
+mysql> INSERT INTO Employee (Empno, Ename, Job, Salary)
+    -> VALUES (1, 'John Doe', 'Manager', 60000);
+Query OK, 1 row affected (0.07 sec)
+
+mysql> select * from Employee;
++-------+----------+---------+----------+
+| Empno | Ename    | Job     | Salary   |
++-------+----------+---------+----------+
+|     1 | a        | aa      |   111.00 |
+|     2 | b        | bb      |   222.00 |
+|     3 | c        | cc      |   333.00 |
+|     4 | d        | dd      |   444.00 |
+|     5 | e        | ee      |   555.00 |
+|     6 | f        | ff      |   666.00 |
+|     1 | John Doe | Manager | 60000.00 |
++-------+----------+---------+----------+
+7 rows in set (0.00 sec)
+
+mysql> UPDATE Employee
+    -> SET Salary = 65000
+    -> WHERE Empno = 1;
+Query OK, 2 rows affected (0.07 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+mysql> select * from Employee;
++-------+----------+---------+----------+
+| Empno | Ename    | Job     | Salary   |
++-------+----------+---------+----------+
+|     1 | a        | aa      | 65000.00 |
+|     2 | b        | bb      |   222.00 |
+|     3 | c        | cc      |   333.00 |
+|     4 | d        | dd      |   444.00 |
+|     5 | e        | ee      |   555.00 |
+|     6 | f        | ff      |   666.00 |
+|     1 | John Doe | Manager | 65000.00 |
++-------+----------+---------+----------+
+7 rows in set (0.01 sec)
+
+mysql> DELETE FROM Employee WHERE Empno = 1;
+Query OK, 2 rows affected (0.08 sec)
+
+mysql> select * from Employee;
++-------+-------+------+--------+
+| Empno | Ename | Job  | Salary |
++-------+-------+------+--------+
+|     2 | b     | bb   | 222.00 |
+|     3 | c     | cc   | 333.00 |
+|     4 | d     | dd   | 444.00 |
+|     5 | e     | ee   | 555.00 |
+|     6 | f     | ff   | 666.00 |
++-------+-------+------+--------+
+5 rows in set (0.00 sec)
+

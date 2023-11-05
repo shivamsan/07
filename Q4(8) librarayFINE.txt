@@ -1,0 +1,116 @@
+
+atharva@atharva-Lenovo-Y520-15IKBN:~$ sudo mysql;
+[sudo] password for atharva: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 17
+Server version: 8.0.34-1ubuntu1 (Ubuntu)
+
+Copyright (c) 2000, 2023, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> use athu;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> create table borrower(
+    -> roll_no INT,
+    -> name varchar(20),
+    -> DOI date,
+    -> book_name VARCHAR(20),
+    -> status varchar(20));
+Query OK, 0 rows affected (3.76 sec)
+
+mysql> create table fine(
+    -> roll_no int,
+    -> fine_date date,
+    -> amount int);
+Query OK, 0 rows affected (6.07 sec)
+
+mysql> insert into borrower(roll_no,name,DOI,book_name, status) values(12,"atharva","2023-10-12","cars","issued");
+Query OK, 1 row affected (0.06 sec)
+
+mysql> insert into borrower(roll_no,name,DOI,book_name, status) values(14,"rane","2023-09-12","cats","issued");
+Query OK, 1 row affected (0.08 sec)
+
+mysql> insert into borrower(roll_no,name,DOI,book_name, status) values(16,"adi","2023-10-12","cats","returned");
+Query OK, 1 row affected (0.08 sec)
+
+mysql> insert into borrower(roll_no,name,DOI,book_name, status) values(18,"diya","2023-08-12","chicken","returned");
+Query OK, 1 row affected (0.40 sec)
+
+mysql> insert into borrower(roll_no,name,DOI,book_name, status) values(20,"yashashree","2023-09-02","stark","issued");
+Query OK, 1 row affected (0.07 sec)
+mysql> select * from borrower;
++---------+------------+------------+-----------+----------+
+| roll_no | name       | DOI        | book_name | status   |
++---------+------------+------------+-----------+----------+
+|      12 | atharva    | 2023-10-12 | cars      | issued   |
+|      14 | rane       | 2023-09-12 | cats      | issued   |
+|      16 | adi        | 2023-10-12 | cats      | returned |
+|      18 | diya       | 2023-08-12 | chicken   | returned |
+|      20 | yashashree | 2023-09-02 | stark     | issued   |
+
+
+
+
+
+
+
+
+
+mysql> delimiter //
+mysql> create procedure B(roll_new int,book_name varchar(20))
+    -> begin
+    -> declare X integer;
+    -> declare continue handler for not found
+    -> begin
+    -> select 'NOT FOUND';
+    -> end;
+    -> select datediff(curdate(),DOI) into X from borrower where roll_no=roll_new;
+    -> if (X>15&&X<30)
+    -> then
+    -> insert into fine values(roll_new,curdate(),(X*5));
+    -> end if;
+    -> if (X>30)
+    -> then
+    -> insert into fine values(roll_new,curdate(),(X*50));
+    -> end if;
+    -> update borrower set status='returned' where roll_no=roll_new;
+    -> end;
+    -> //
+Query OK, 0 rows affected, 1 warning (0.26 sec)
+
+
+mysql> call B(14,"xy")
+    -> //
+Query OK, 1 row affected (0.46 sec)
+
+mysql> select * from fine;
+    -> //
++---------+------------+--------+
+| roll_no | fine_date  | amount |
++---------+------------+--------+
+|      14 | 2023-11-05 |   2700 |
++---------+------------+--------+
+1 row in set (0.00 sec)
+
+
+
+mysql> select * from borrower;
+    -> //
++---------+------------+------------+-----------+----------+
+| roll_no | name       | DOI        | book_name | status   |
++---------+------------+------------+-----------+----------+
+|      12 | atharva    | 2023-10-12 | cars      | issued   |
+|      14 | rane       | 2023-09-12 | cats      | returned |
+|      16 | adi        | 2023-10-12 | cats      | returned |
+|      18 | diya       | 2023-08-12 | chicken   | returned |
+|      20 | yashashree | 2023-09-02 | stark     | issued   |
++---------+------------+------------+-----------+----------+
+5 rows in set (0.00 sec)

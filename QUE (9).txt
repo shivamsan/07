@@ -1,0 +1,38 @@
+mysql> create table areas(
+    -> radius float,
+    -> area float);
+Query OK, 0 rows affected (1.53 sec)
+
+mysql> delimiter //
+mysql> create procedure calculate_area()
+    -> begin
+    -> declare radius integer;
+    -> declare area float;
+    -> SET radius = 5;
+    -> WHILE radius <= 9 DO
+    -> SET area = 3.14*radius*radius;
+    -> INSERT INTO areas VALUES(radius,area);
+    -> SET radius = radius + 1;
+    -> END WHILE;
+    -> END;
+    -> //
+Query OK, 0 rows affected (0.43 sec)
+
+
+mysql> call calculate_area();
+    -> //
+Query OK, 1 row affected (0.48 sec)
+
+mysql> select * from areas;
+    -> //
++--------+--------+
+| radius | area   |
++--------+--------+
+|      5 |   78.5 |
+|      6 | 113.04 |
+|      7 | 153.86 |
+|      8 | 200.96 |
+|      9 | 254.34 |
++--------+--------+
+5 rows in set (0.00 sec)
+

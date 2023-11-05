@@ -1,0 +1,155 @@
+atharva@atharva-Lenovo-Y520-15IKBN:~$ sudo mysql;
+[sudo] password for atharva: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 19
+Server version: 8.0.34-1ubuntu1 (Ubuntu)
+
+Copyright (c) 2000, 2023, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> use athu;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> create table marks(
+    -> roll_no int,
+    -> name varchar(20),
+    -> total_marks varchar(20));
+Query OK, 0 rows affected (0.47 sec)
+
+mysql> create table result(
+    -> roll_no int,
+    -> name varchar(20),
+    -> class varchar(20));
+Query OK, 0 rows affected (6.19 sec)
+
+
+mysql> insert into marks values('1','atharva','1400');
+Query OK, 1 row affected (0.68 sec)
+
+mysql> insert into marks values('2','rane','980');
+Query OK, 1 row affected (0.06 sec)
+
+mysql> insert into marks values('3','diya','880');
+Query OK, 1 row affected (0.07 sec)
+
+mysql> insert into marks values('4','yashashree','820');
+Query OK, 1 row affected (0.12 sec)
+
+mysql> insert into marks values('5','adi','700');
+Query OK, 1 row affected (0.07 sec)
+
+delimiter //
+dr
+mysql> create procedure proc_result(in marks int,out class char(20))
+    -> begin
+    -> if(marks<1500&&marks>990)
+    -> then
+    -> set class='Distincton';
+    -> end if;
+    -> if(marks<989&&marks>890)
+    -> then
+    -> set class='First Class';
+    -> end if;
+    -> if(marks<889&&marks>825)
+    -> then
+    -> set class='Higher Second Class';
+    -> end if;
+    -> if(marks<824&&marks>750)
+    -> then
+    -> set class='Second Class';
+    -> end if;if(marks<749&&marks>650)
+    -> then
+    -> set class='Passed';
+    -> end if;
+    -> if(marks<649)
+    -> then
+    -> set class='Fail';
+    -> end if;
+    -> end;
+    -> //
+Query OK, 0 rows affected, 5 warnings (1.12 sec)
+
+mysql> create function final_result3(R1 int)
+    -> returns int
+    -> deterministic
+    -> begin
+    -> declare fmarks integer;
+    -> declare grade varchar(20);
+    -> declare stud_name varchar(20);
+    -> select marks.total_marks,marks.name into fmarks,stud_name from marks where marks.roll_no=R1;
+    -> call proc_result(fmarks,@grade);
+    -> insert into result values(R1,stud_name,@grade);
+    -> return R1;
+    -> end;
+    -> //
+Query OK, 0 rows affected (0.10 sec)
+
+mysql> select final_result3(2);
+    -> //
++------------------+
+| final_result3(2) |
++------------------+
+|                2 |
++------------------+
+1 row in set (0.80 sec)
+
+mysql> select final_result3(3);
+    -> //
++------------------+
+| final_result3(3) |
++------------------+
+|                3 |
++------------------+
+1 row in set (0.07 sec)
+
+mysql> select final_result3(4);
+    -> //
++------------------+
+| final_result3(4) |
++------------------+
+|                4 |
++------------------+
+1 row in set (0.07 sec)
+
+mysql> select * from result;
+    -> //
++---------+------------+---------------------+
+| roll_no | name       | class               |
++---------+------------+---------------------+
+|       2 | rane       | First Class         |
+|       3 | diya       | Higher Second Class |
+|       4 | yashashree | Second Class        |
++---------+------------+---------------------+
+3 rows in set (0.00 sec)
+
+mysql> select final_result3(1);
+    -> //
++------------------+
+| final_result3(1) |
++------------------+
+|                1 |
++------------------+
+1 row in set (0.07 sec)
+
+mysql> select * from result;
+    -> //
++---------+------------+---------------------+
+| roll_no | name       | class               |
++---------+------------+---------------------+
+|       2 | rane       | First Class         |
+|       3 | diya       | Higher Second Class |
+|       4 | yashashree | Second Class        |
+|       1 | atharva    | Distincton          |
++---------+------------+---------------------+
+4 rows in set (0.00 sec)
+
+
+
+
